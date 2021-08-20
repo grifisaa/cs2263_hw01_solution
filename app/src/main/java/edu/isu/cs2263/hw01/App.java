@@ -18,11 +18,15 @@ package edu.isu.cs2263.hw01;
 
 import org.apache.commons.cli.*;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * Main app class for the program
  *
  * @author Isaac D Griffith
- * @version 1.0.0
+ * @version 1.1.0
  */
 public class App {
 
@@ -31,6 +35,9 @@ public class App {
      * @param args Command line arguments
      */
     public static void main(String[] args) {
+        Evaluator eval = new Evaluator();
+        InputMode inMode = new InteractiveInputMode();
+
         Options options = new Options();
 
         Option batch = Option.builder("b").longOpt("batch").argName("file").hasArg().desc("batch file containing expressions to evaluate").build();
@@ -47,13 +54,21 @@ public class App {
             CommandLine line = parser.parse(options, args);
 
             if (line.hasOption("help")) {
-                HelpFormatter formatter = new HelpFormatter();
-                formatter.printHelp("eval [OPTIONS]", "Evaluation of simple mathematical expressions\n\n", options, "\nCopyright (C) 2021 Isaac D. Griffith");
+                printHelp(options);
                 System.exit(0);
             }
 
             if (line.hasOption("batch")) {
-                System.out.println("Batch value: " + line.getOptionValue("batch"));
+                String file = line.getOptionValue("batch");
+                Path path = Paths.get(file);
+                if (Files.exists(path)) {
+                    inMode = new BatchInputMode(path);
+                } else {
+                    System.out.println("The provided file for the batch input mode does not exist.");
+                    System.out.println();
+                    printHelp(options);
+                    System.exit(1);
+                }
             }
 
             if (line.hasOption("output")) {
@@ -62,6 +77,19 @@ public class App {
         } catch(ParseException exp) {
             System.err.println("Parsing failed. Reason: " + exp.getMessage());
         }
+
+        System.out.println("");
+        inMode.processInput(eval);
+    }
+
+    /**
+     * Helper method to print the help/usage message
+     *
+     * @param options The command line options object
+     */
+    private static void printHelp(Options options) {
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp("eval [OPTIONS]", "Evaluation of simple mathematical expressions\n\n", options, "\nCopyright (C) 2021 Isaac D. Griffith");
     }
 }
 

@@ -17,29 +17,33 @@
 package edu.isu.cs2263.hw01;
 
 /**
- * Exception class for bringing up issues with the processing of expressions
+ * Object to process expressions from user input at the console.
+ *
+ * It is expected that each line of the file represents an individual expression. Also, the expressions should be properly formatted
+ * such that each expression is a sequence of numbers separated by operators (+, -, *, /) and between each number and each operator is
+ * a space. For example: 1 + 2 * 3 is properly formatted while 1+2*3 is not.
+ *
  * @author Isaac D Griffith
  * @version 1.1.0
  */
-public class ImproperlyFormattedExpressionException extends Exception {
-    /**
-     * Constructs a new exception with {@code null} as its detail message.
-     * The cause is not initialized, and may subsequently be initialized by a
-     * call to {@link #initCause}.
-     */
-    public ImproperlyFormattedExpressionException() {
-
-    }
+public class InteractiveInputMode implements InputMode {
 
     /**
-     * Constructs a new exception with the specified detail message.  The
-     * cause is not initialized, and may subsequently be initialized by
-     * a call to {@link #initCause}.
+     * Drives the processing of user input and passes the input to the given evaluator
      *
-     * @param message the detail message. The detail message is saved for
-     *                later retrieval by the {@link #getMessage()} method.
+     * @param eval Evaluator which will handle the input
      */
-    public ImproperlyFormattedExpressionException(String message) {
-        super(message);
+    @Override
+    public void processInput(Evaluator eval) {
+        while(true) {
+            System.console().printf("> ");
+            String expr = System.console().readLine();
+            try {
+                String result = eval.evaluate(expr);
+                System.console().printf("  -> %s%n", result);
+            } catch (ImproperlyFormattedExpressionException ifee) {
+                System.console().printf("  -> %s", ifee.getMessage());
+            }
+        }
     }
 }

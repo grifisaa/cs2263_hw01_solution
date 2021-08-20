@@ -37,9 +37,9 @@ For example:
 $ eval
 
 > 4 + 5 + 6
-  -> 15
+  -> 15.0
 > 1 / 4 * 4 - 1
-  -> 0
+  -> 0.0
   
 Ctrl-C
 ```
@@ -66,9 +66,9 @@ Thus, the example from above would look something like the following
 eval --batch batch.txt
 
 > 4 + 5 + 6
-  -> 15
+  -> 15.0
 > 1 / 4 * 4 - 1
-  -> 0
+  -> 0.0
 ```
 
 ### Output modes
@@ -86,18 +86,18 @@ An example would be the following:
 eval --output output.txt
 
 > 4 + 5 + 6
-  -> 15
+  -> 15.0
 > 1 / 4 * 4 - 1
-  -> 0
+  -> 0.0
 ```
 
 The file `output.txt` would then look something like:
 
 ```
 4 + 5 + 6
-  -> 15
+  -> 15.0
 1 / 4 * 4 - 1
-  -> 0
+  -> 0.0
 ```
 
 # Contributing
