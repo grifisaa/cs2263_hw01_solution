@@ -11,7 +11,7 @@ plugins {
     id 'application'
 
     // Hierynomus's license plugin
-    id "com.github.hierynomus.license" version "0.15.0"
+    id "com.github.hierynomus.license" version "0.16.1"
 }
 
 repositories {
@@ -37,6 +37,10 @@ application {
     // Define the main class for the application.
     mainClass = 'edu.isu.cs2263.hw01.App'
     applicationName = 'eval'
+}
+
+license {
+    header = rootProject.file('LICENSE')
 }
 
 tasks.named('test') {
