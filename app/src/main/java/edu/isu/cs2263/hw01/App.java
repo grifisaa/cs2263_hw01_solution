@@ -5,11 +5,18 @@ package edu.isu.cs2263.hw01;
 
 import org.apache.commons.cli.*;
 
+/**
+ * Main app class for the program
+ *
+ * @author Isaac D Griffith
+ * @version 1.0.0
+ */
 public class App {
-    public String getGreeting() {
-        return "Hello World!";
-    }
 
+    /**
+     * Main method which runs the program
+     * @param args Command line arguments
+     */
     public static void main(String[] args) {
         Options options = new Options();
 

@@ -9,6 +9,9 @@
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
+
+    // Hierynomus's license plugin
+    id "com.github.hierynomus.license" version "0.15.0"
 }
 
 repositories {
@@ -33,6 +36,7 @@ dependencies {
 application {
     // Define the main class for the application.
     mainClass = 'edu.isu.cs2263.hw01.App'
+    applicationName = 'eval'
 }
 
 tasks.named('test') {
