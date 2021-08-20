@@ -5,6 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Added the output mode processing for both console and file output modes
+
+### Changed
+- Modified the input modes to use the output modes for output rather than direct calls to System.out
+- Modified App to correctly process the `output` command line option, and refactored the class to improve maintainability
+- Updated all comments and version numbers of the files
 
 ## [1.1.0] - 2021-08-20
 ### Added

@@ -18,6 +18,7 @@ package edu.isu.cs2263.hw01;
 
 import org.apache.commons.cli.*;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,7 +27,7 @@ import java.nio.file.Paths;
  * Main app class for the program
  *
  * @author Isaac D Griffith
- * @version 1.1.0
+ * @version 1.2.0
  */
 public class App {
 
@@ -35,18 +36,7 @@ public class App {
      * @param args Command line arguments
      */
     public static void main(String[] args) {
-        Evaluator eval = new Evaluator();
-        InputMode inMode = new InteractiveInputMode();
-
-        Options options = new Options();
-
-        Option batch = Option.builder("b").longOpt("batch").argName("file").hasArg().desc("batch file containing expressions to evaluate").build();
-        Option output = Option.builder("o").longOpt("output").argName("file").hasArg().desc("output file").build();
-        Option help = Option.builder("h").longOpt("help").desc("print usage message").build();
-
-        options.addOption(batch);
-        options.addOption(help);
-        options.addOption(output);
+        Options options = setupOptions();
 
         CommandLineParser parser = new DefaultParser();
         try {
@@ -56,30 +46,81 @@ public class App {
             if (line.hasOption("help")) {
                 printHelp(options);
                 System.exit(0);
+            } else {
+                Evaluator eval = new Evaluator();
+                InputMode inMode = setupInputMode(eval, options, line);
+                setupOutputMode(inMode, line);
+                System.out.println();
+                inMode.processInput();
             }
-
-            if (line.hasOption("batch")) {
-                String file = line.getOptionValue("batch");
-                Path path = Paths.get(file);
-                if (Files.exists(path)) {
-                    inMode = new BatchInputMode(path);
-                } else {
-                    System.out.println("The provided file for the batch input mode does not exist.");
-                    System.out.println();
-                    printHelp(options);
-                    System.exit(1);
-                }
-            }
-
-            if (line.hasOption("output")) {
-                System.out.println("Output value: " + line.getOptionValue("output"));
-            }
-        } catch(ParseException exp) {
+        } catch (ParseException exp) {
             System.err.println("Parsing failed. Reason: " + exp.getMessage());
         }
+    }
 
-        System.out.println("");
-        inMode.processInput(eval);
+    /**
+     * Sets up the command line options used during commandline processing
+     *
+     * @return Options object
+     */
+    private static Options setupOptions() {
+        Options options = new Options();
+
+        Option batch = Option.builder("b").longOpt("batch").argName("file").hasArg().desc("batch file containing expressions to evaluate").build();
+        Option output = Option.builder("o").longOpt("output").argName("file").hasArg().desc("output file").build();
+        Option help = Option.builder("h").longOpt("help").desc("print usage message").build();
+
+        options.addOption(batch);
+        options.addOption(help);
+        options.addOption(output);
+        return options;
+    }
+
+    /**
+     * Determines which input mode will be used for evaluation, based on command line options.
+     *
+     * @param eval Evaluator used by the created input mode
+     * @param options command line options used, if help is to be printed
+     * @param line The CommandLine object to be processed
+     * @return An InputMode object
+     */
+    private static InputMode setupInputMode(Evaluator eval, Options options, CommandLine line) {
+        InputMode inMode = new InteractiveInputMode(eval);
+        if (line.hasOption("batch")) {
+            String file = line.getOptionValue("batch");
+            Path path = Paths.get(file);
+            if (Files.exists(path)) {
+                inMode = new BatchInputMode(eval, path);
+            } else {
+                System.out.println("The provided file for the batch input mode does not exist.");
+                System.out.println();
+                printHelp(options);
+                System.exit(1);
+            }
+        }
+        return inMode;
+    }
+
+    /**
+     * Process the command line to determine which output modes will be used for the given input mode
+     *
+     * @param inMode InputMode object to which output modes will be added
+     * @param line CommandLine object to evaluate
+     */
+    private static void setupOutputMode(InputMode inMode, CommandLine line) {
+        inMode.addOutputMode(new ConsoleOutputMode());
+        if (line.hasOption("output")) {
+            String file = line.getOptionValue("output");
+            Path path = Paths.get(file);
+            try {
+                Files.deleteIfExists(path);
+                Files.createFile(path);
+            } catch (IOException ex) {
+                System.out.println(ex.getMessage());
+                System.exit(1);
+            }
+            inMode.addOutputMode(new FileOutputMode(path));
+        }
     }
 
     /**

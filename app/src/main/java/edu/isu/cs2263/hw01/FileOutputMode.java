@@ -16,46 +16,59 @@
  */
 package edu.isu.cs2263.hw01;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Path;
+
 /**
- * Object to process expressions from user input at the console.
- *
- * It is expected that each line of the file represents an individual expression. Also, the expressions should be properly formatted
- * such that each expression is a sequence of numbers separated by operators (+, -, *, /) and between each number and each operator is
- * a space. For example: 1 + 2 * 3 is properly formatted while 1+2*3 is not.
+ * Handles sending output to a file
  *
  * @author Isaac D Griffith
  * @version 1.2.0
  */
-public class InteractiveInputMode extends AbstractInputMode {
+public class FileOutputMode implements OutputMode {
 
-    /**
-     * Constructs a new InteractiveInputMode
-     *
-     * @param eval The evaluator used to evaluate expressions
-     */
-    public InteractiveInputMode(Evaluator eval) {
-        super(eval);
+    private Path path;
+
+    public FileOutputMode(Path path) {
+        this.path = path;
     }
 
     /**
-     * Drives the processing of user input and passes the input to the given evaluator
+     * Prints the input expr to the output stream
+     *
+     * @param expr  Input expression
+     * @param batch Indicates that this is batch processing
      */
     @Override
-    public void processInput() {
-        while(true) {
-            System.console().printf("> ");
-            String expr = System.console().readLine();
-            printData(expr);
+    public void printInput(String expr, boolean batch) {
+        appendLine(expr);
+    }
+
+    /**
+     * Prints the results of the expression evaluation to the output stream
+     *
+     * @param result Results to be printed
+     */
+    @Override
+    public void printResult(String result) {
+        appendLine(String.format("  -> %s", result));
+    }
+
+    /**
+     * Utility method to append a line of text to the end of the file denoted by the path
+     *
+     * @param text Line of text to be appended
+     */
+    private void appendLine(String text) {
+        try (FileWriter fw = new FileWriter(path.toFile(), true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw);) {
+            pw.println(text);
+        } catch (IOException ex) {
+
         }
-    }
-
-    /**
-     * Tests if the input mode is batch or not
-     *
-     * @return true if the mode is batch, false otherwise.
-     */
-    @Override
-    protected boolean isBatch() {
-        return false;
     }
 }

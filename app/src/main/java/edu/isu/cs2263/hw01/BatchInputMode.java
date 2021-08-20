@@ -26,44 +26,46 @@ import java.util.List;
  *
  * It is expected that each line of the file represents an individual expression. Also, the expressions should be properly formatted
  * such that each expression is a sequence of numbers separated by operators (+, -, *, /) and between each number and each operator is
- * a space. For example: 1 + 2 * 3 is properly formated while 1+2*3 is not.
+ * a space. For example: 1 + 2 * 3 is properly formatted while 1+2*3 is not.
  *
  * @author Isaac D Griffith
- * @version 1.1.0
+ * @version 1.2.0
  */
-public class BatchInputMode implements InputMode {
+public class BatchInputMode extends AbstractInputMode {
 
     private final Path path;
 
     /**
      * Constructs a new BatchInputMode object with the given batch file path
+     *
+     * @param eval The evaluator used to evaluate expressions
      * @param path Path to the batch file to be processed
      */
-    public BatchInputMode(Path path) {
+    public BatchInputMode(Evaluator eval, Path path) {
+        super(eval);
         this.path = path;
     }
 
     /**
      * Drives the processing of user input and passes the input to the given evaluator
-     *
-     * @param eval Evaluator which will handle the input
      */
     @Override
-    public void processInput(Evaluator eval) {
+    public void processInput() {
         try {
             List<String> lines = Files.readAllLines(path);
-
-            lines.forEach(expr -> {
-                System.out.println("> " + expr);
-                try {
-                    String result = eval.evaluate(expr);
-                    System.out.println("  -> " + result);
-                } catch (ImproperlyFormattedExpressionException ifee) {
-                    System.out.println("  -> " + ifee.getMessage());
-                }
-            });
+            lines.forEach(this::printData);
         } catch (IOException ioex) {
             System.out.println(ioex.getMessage());
         }
+    }
+
+    /**
+     * Tests if the input mode is batch or not
+     *
+     * @return true if the mode is batch, false otherwise.
+     */
+    @Override
+    protected boolean isBatch() {
+        return true;
     }
 }

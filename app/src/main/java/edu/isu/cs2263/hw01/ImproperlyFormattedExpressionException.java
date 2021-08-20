@@ -19,7 +19,7 @@ package edu.isu.cs2263.hw01;
 /**
  * Exception class for bringing up issues with the processing of expressions
  * @author Isaac D Griffith
- * @version 1.1.0
+ * @version 1.2.0
  */
 public class ImproperlyFormattedExpressionException extends Exception {
     /**
