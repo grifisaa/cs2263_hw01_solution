@@ -28,7 +28,7 @@ import java.util.Queue;
  * Additionally, there should always be one more number than operator.
  *
  * @author Isaac D Griffith
- * @version 1.1.0
+ * @version 1.2.0
  */
 public class Evaluator {
 

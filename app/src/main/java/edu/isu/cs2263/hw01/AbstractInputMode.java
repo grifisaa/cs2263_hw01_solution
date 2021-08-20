@@ -16,36 +16,54 @@
  */
 package edu.isu.cs2263.hw01;
 
+import com.google.common.collect.Lists;
+
+import java.util.List;
+
 /**
- * Object to process expressions from user input at the console.
- *
- * It is expected that each line of the file represents an individual expression. Also, the expressions should be properly formatted
- * such that each expression is a sequence of numbers separated by operators (+, -, *, /) and between each number and each operator is
- * a space. For example: 1 + 2 * 3 is properly formatted while 1+2*3 is not.
+ * Class containing common functionality for the input modes
  *
  * @author Isaac D Griffith
  * @version 1.2.0
  */
-public class InteractiveInputMode extends AbstractInputMode {
+public abstract class AbstractInputMode implements InputMode {
+
+    protected List<OutputMode> outputModes;
+    protected Evaluator eval;
 
     /**
-     * Constructs a new InteractiveInputMode
+     * Constructs an AbstractInputMode object with the given evaluator and empty list of outputmodes
      *
      * @param eval The evaluator used to evaluate expressions
      */
-    public InteractiveInputMode(Evaluator eval) {
-        super(eval);
+    public AbstractInputMode(Evaluator eval) {
+        this.eval = eval;
+        outputModes = Lists.newArrayList();
     }
 
     /**
-     * Drives the processing of user input and passes the input to the given evaluator
+     * Adds the given output mode to the list of output modes used. If the provide mode is null, nothing changes.
+     *
+     * @param mode Output Mode object to be added.
      */
-    @Override
-    public void processInput() {
-        while(true) {
-            System.console().printf("> ");
-            String expr = System.console().readLine();
-            printData(expr);
+    public void addOutputMode(OutputMode mode) {
+        if (mode != null) {
+            outputModes.add(mode);
+        }
+    }
+
+    /**
+     * Handles print of output, and uses the evaluator to evaluate the expression.
+     *
+     * @param expr Expression to be handled
+     */
+    protected void printData(String expr) {
+        outputModes.forEach(mode -> mode.printInput(expr, isBatch()));
+        try {
+            String result = eval.evaluate(expr);
+            outputModes.forEach(mode -> mode.printResult(result));
+        } catch (ImproperlyFormattedExpressionException ifee) {
+            outputModes.forEach(mode -> mode.printResult(ifee.getMessage()));
         }
     }
 
@@ -54,8 +72,5 @@ public class InteractiveInputMode extends AbstractInputMode {
      *
      * @return true if the mode is batch, false otherwise.
      */
-    @Override
-    protected boolean isBatch() {
-        return false;
-    }
+    protected abstract boolean isBatch();
 }

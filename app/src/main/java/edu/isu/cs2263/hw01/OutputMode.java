@@ -17,22 +17,25 @@
 package edu.isu.cs2263.hw01;
 
 /**
- * Interface defining the contract for input modes.
+ * Interface defining the contract for OutputModes
  *
  * @author Isaac D Griffith
  * @version 1.2.0
  */
-public interface InputMode {
+public interface OutputMode {
 
     /**
-     * Drives the processing of user input and passes the input to the given evaluator
-     */
-    void processInput();
-
-    /**
-     * Adds the given output mode to the list of output modes used. If the provide mode is null, nothing changes.
+     * Prints the input expr to the output stream
      *
-     * @param mode Output Mode object to be added.
+     * @param expr Input expression
+     * @param batch Indicates that this is batch processing
      */
-    void addOutputMode(OutputMode mode);
+    void printInput(String expr, boolean batch);
+
+    /**
+     * Prints the results of the expression evaluation to the output stream
+     *
+     * @param result Results to be printed
+     */
+    void printResult(String result);
 }
