@@ -6,10 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2021-08-20
+### Added
+- Added in the ability to evaluate expressions
+- Added the ability to process input either interactively or via a batch file
+
+### Changed
+- Modified the processing of the `batch` command line option to now turn on batch file processing
+
 ## [1.0.0] - 2021-08-20
 ### Added
 - Added basic project structure including automated build, readme, etc.
 - Implemented basic command line processing capabilities
 
-[Unreleased]: https://https://github.com/grifisaa/cs2263_hw01_solution/compare/v1.0.0...HEAD
+[Unreleased]: https://https://github.com/grifisaa/cs2263_hw01_solution/compare/v1.1.0...HEAD
+[v1.1.0]: https://https://github.com/grifisaa/cs2263_hw01_solution/compare/v1.0.0...v1.1.0
 [v1.0.0]: https://https://github.com/grifisaa/cs2263_hw01_solution/releases/tag/v0.0.1
